@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../code/.idea/code.iml" filepath="$PROJECT_DIR$/../code/.idea/code.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/youku_server.iml" filepath="$PROJECT_DIR$/.idea/youku_server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../youtube_upload/.idea/youtube_upload.iml" filepath="$PROJECT_DIR$/../youtube_upload/.idea/youtube_upload.iml" />
+    </modules>
+  </component>
+</project>
