@@ -53,7 +53,7 @@ class TaskCommand extends Command
                     $local_xml_name = $name_arr[0].'_result.xml';       //存在本地的视频xml文件名称
 
                     //检测youtube上的视频目录并把视频result.xml保存到本地一份
-                    $shell = '/bin/bash ' . base_path() . '/filecheck.sh '.$video->filename.' '.$local_xml_name;
+                    $shell = '/bin/bash ' . app_path() . '/Console/Commands/filecheck.sh '.$video->filename.' '.$local_xml_name;
                     $res = shell_exec($shell);
 
                     if($res == -1) {
@@ -113,7 +113,7 @@ class TaskCommand extends Command
 
                                     //创建新的视频目录存放组合的csv
                                     $create_csv_dir = $video->filename.'_new';
-                                    $shell = '/bin/bash ' . base_path() . '/filesync.sh '.$create_csv_dir.' '.$new_csv_path.' '.$path_arr[1];
+                                    $shell = '/bin/bash ' . app_path() . '/Console/Commands/filesync.sh '.$create_csv_dir.' '.$new_csv_path.' '.$path_arr[1];
                                     $res = shell_exec($shell);
 
                                     if($res == 1) {

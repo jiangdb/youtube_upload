@@ -25,6 +25,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $shell = '/bin/bash ' . app_path() . '/Console/Commands/filecheck.sh ';
+        var_dump($shell); die();
         $schedule->command('task:handle')->everyMinute();
     }
 
