@@ -59,9 +59,9 @@ class FileServerController extends Controller
         if(!empty($list)) {
             foreach ($list as $key => $val) {
                 if($val->status == 2) {
-                    $arr = explode('.', $val->csv_path);
-                    if(Storage::disk('local')->exists($arr[0].'_result.xml')) {
-                        $val['xml_path'] = $arr[0].'_result.xml';
+                    $arr = explode('/', $val->csv_path);
+                    if(Storage::disk('local')->exists($arr[0].'/'.$val->xml_name)) {
+                        $val['xml_path'] = $arr[0].'/'.$val->xml_name;
                     } else {
                         $val['xml_path'] = '';
                     }

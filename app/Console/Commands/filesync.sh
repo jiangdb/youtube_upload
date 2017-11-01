@@ -6,7 +6,7 @@ if [ $# -ne 3 ]; then
 fi
 
 
-videoDir='/home/vagrant/youku_server/storage/app/video/'
+videoDir='/home/vagrant/youtube_upload/storage/app/video/'
 
 if [ ! -d "$videoDir$1" ]; then
   mkdir "$videoDir$1"
