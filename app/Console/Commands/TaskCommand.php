@@ -42,9 +42,9 @@ class TaskCommand extends Command
     public function handle()
     {
         Log::info(null, array('task_command' => 'handle start.....'));
-        DB::table('file_record')->where('status', '<>', 2)->orderBy('id', 'asc')->chunk(100, function ($videos) {
+        DB::table('task_record')->where('status', '<>', 2)->orderBy('id', 'asc')->chunk(100, function ($videos) {
             foreach($videos as $video) {
-                DB::table('file_record')->where('id', $video->id)->update(['status' => 1]);
+                DB::table('task_record')->where('id', $video->id)->update(['status' => 1]);
                 $failed = 0;
                 if(Storage::disk('local')->exists($video->csv_path)) {
 
@@ -124,7 +124,7 @@ class TaskCommand extends Command
                                             $res = shell_exec($shell);
 
                                             if($res == 1) {
-                                                DB::table('file_record')->where('id', $video->id)->update(['status' => 2, 'xml_name' => $local_xml_name, 'vid' => $vid]);
+                                                DB::table('task_record')->where('id', $video->id)->update(['status' => 2, 'xml_name' => $local_xml_name, 'vid' => $vid]);
                                                 Log::info(null, array('task_command' => '视频文件目录'.$video->filename.',视频ID:'.$vid.'操作成功.'));
                                             } else {
                                                 $failed = 1;
@@ -148,7 +148,7 @@ class TaskCommand extends Command
                 }
 
                 if($failed == 1) {
-                    DB::table('file_record')->where('id', $video->id)->update(['status' => 3]);
+                    DB::table('task_record')->where('id', $video->id)->update(['status' => 3]);
                 }
             }
         });
