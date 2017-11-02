@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class File extends Model
+class Task extends Model
 {
     //模型关联数据表
-    protected $table = 'file_record';
+    protected $table = 'task';
 
     /**
      * The attributes that are mass assignable.

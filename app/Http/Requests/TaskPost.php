@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FileServerPost extends FormRequest
+class TaskPost extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class FileServerPost extends FormRequest
     public function rules()
     {
         return [
-            'filename' => 'required|unique:file_record|max:255',
+            'filename' => 'required|unique:task|max:255',
             'csv_path' => 'required|file:csv'
         ];
     }

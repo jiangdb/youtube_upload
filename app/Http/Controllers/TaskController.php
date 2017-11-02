@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\File;
-use App\Http\Requests\FileServerPost;
+use App\Task;
+use App\Http\Requests\TaskPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class FileServerController extends Controller
+class TaskController extends Controller
 {
     /**
      * FileServerController constructor.
@@ -27,7 +27,7 @@ class FileServerController extends Controller
      */
     public function index()
     {
-        return view('file.index');
+        return view('task.index');
     }
 
     /**
@@ -55,7 +55,7 @@ class FileServerController extends Controller
             $sear[] = array('uid', '=', Auth::id());
         }
 
-        $list = File::where($sear)->orderBy('updated_at', 'desc')->paginate(15);
+        $list = Task::where($sear)->orderBy('updated_at', 'desc')->paginate(15);
         if(!empty($list)) {
             foreach ($list as $key => $val) {
                 if($val->status == 2) {
@@ -69,7 +69,7 @@ class FileServerController extends Controller
                 $list[$key] = $val;
             }
         }
-        return view('file.lists', ['list' => $list]);
+        return view('task.lists', ['list' => $list]);
     }
 
     /**
@@ -85,10 +85,10 @@ class FileServerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param FileServerPost   $request
+     * @param TaskPost   $request
      * @return \Illuminate\Http\Response
      */
-    public function store(FileServerPost $request)
+    public function store(TaskPost $request)
     {
         $csv_path = null;
         $real_filename = null;
@@ -100,7 +100,7 @@ class FileServerController extends Controller
             $csv_path = Storage::disk('local')->putFileAs('csv_temp', $file, $newFileName);
         }
 
-        $res = File::create([
+        $res = Task::create([
             'uid'           => Auth::id(),
             'filename'      => $request->input('filename'),
             'csv_path'      => $csv_path,
@@ -110,16 +110,16 @@ class FileServerController extends Controller
 
         $stat = $res ? 1 : -1;
 
-        return redirect('/file')->with('stat', $stat);
+        return redirect('/task')->with('stat', $stat);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\File  $file
+     * @param  \App\Task  $file
      * @return \Illuminate\Http\Response
      */
-    public function show(File $file)
+    public function show(Task $file)
     {
         //
     }
@@ -127,16 +127,16 @@ class FileServerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\File  $file
+     * @param  \App\Task  $file
      * @return \Illuminate\Http\Response
      */
-    public function edit(File $file)
+    public function edit(Task $file)
     {
         $info = $file->find($file->id);
         if(empty($info)) {
-            return redirect('/file');
+            return redirect('/task');
         } else {
-            return view('file.index', ['form' => $info]);
+            return view('task.index', ['form' => $info]);
         }
     }
 
@@ -144,10 +144,10 @@ class FileServerController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\File  $file
+     * @param  \App\Task  $file
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, File $file)
+    public function update(Request $request, Task $file)
     {
         $validator = Validator::make($request->all(), [
             'filename' => 'required|max:255'
@@ -179,17 +179,17 @@ class FileServerController extends Controller
 
             $stat = $res ? 1 : -1;
 
-            return redirect('/file')->with('stat', $stat);
+            return redirect('/task')->with('stat', $stat);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\File  $file
+     * @param  \App\Task  $file
      * @return \Illuminate\Http\Response
      */
-    public function destroy(File $file)
+    public function destroy(Task $file)
     {
         if(intval($file->id) > 0){
             $info = $file->find($file->id);
