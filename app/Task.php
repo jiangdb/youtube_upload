@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     //模型关联数据表
-    protected $table = 'task_record';
+    protected $table = 'task';
 
     /**
      * The attributes that are mass assignable.

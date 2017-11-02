@@ -13,7 +13,7 @@ class TaskRecordTable extends Migration
      */
     public function up()
     {
-        Schema::rename('file_record', 'task_record');
+        Schema::rename('file_record', 'task');
     }
 
     /**
@@ -23,6 +23,6 @@ class TaskRecordTable extends Migration
      */
     public function down()
     {
-
+        Schema::rename('task', 'file_record');
     }
 }

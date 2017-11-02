@@ -27,7 +27,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/task';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -67,5 +67,13 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    protected function redirectTo()
+    {
+        return route('task.index');
     }
 }

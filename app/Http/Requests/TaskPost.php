@@ -24,7 +24,7 @@ class TaskPost extends FormRequest
     public function rules()
     {
         return [
-            'filename' => 'required|unique:task_record|max:255',
+            'filename' => 'required|unique:task|max:255',
             'csv_path' => 'required|file:csv'
         ];
     }
