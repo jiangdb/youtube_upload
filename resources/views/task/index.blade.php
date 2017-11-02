@@ -5,10 +5,10 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">添加YouTube视频信息<a href="{{route('file.lists')}}" style="display: block; float: right; width: 100px; height:100%; font-size: 16px; text-align: center; text-decoration: underline; cursor: pointer;">视频列表</a></div>
+                    <div class="panel-heading">添加YouTube视频信息<a href="{{route('task.lists')}}" style="display: block; float: right; width: 100px; height:100%; font-size: 16px; text-align: center; text-decoration: underline; cursor: pointer;">视频列表</a></div>
 
                     <div class="panel-body">
-                        <form class="form-horizontal" method="POST" action="{{ !empty($form) ? route('file.update', $form->id) : route('file.store') }}" enctype="multipart/form-data">
+                        <form class="form-horizontal" method="POST" action="{{ !empty($form) ? route('task.update', $form->id) : route('task.store') }}" enctype="multipart/form-data">
                             {{csrf_field()}}
                             @if(!empty($form))
                                 {{method_field('PUT')}}
@@ -52,7 +52,7 @@
         @if(Session::has('stat'))
             @if(Session::get('stat') == 1)
                 alert("保存成功");
-                location.href = '/file/lists';
+                location.href = '/task/lists';
             @elseif(Session::get('stat') == -1)
                 alert("保存失败");
             @endif

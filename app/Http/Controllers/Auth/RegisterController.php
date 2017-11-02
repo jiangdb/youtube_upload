@@ -27,7 +27,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/file';
+    protected $redirectTo = '/task';
 
     /**
      * Create a new controller instance.

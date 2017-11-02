@@ -5,10 +5,10 @@
         <div class="row">
             <div class="col-md-11 center-block" style="float: none;">
                 <div class="panel panel-default">
-                    <div class="panel-heading">YouTube视频列表<a href="{{route('file.index')}}" style="display: block; float: right; width: 100px; height:100%; font-size: 16px; text-align: center; text-decoration: underline; cursor: pointer;">添加视频信息</a></div>
+                    <div class="panel-heading">YouTube视频列表<a href="{{route('task.index')}}" style="display: block; float: right; width: 100px; height:100%; font-size: 16px; text-align: center; text-decoration: underline; cursor: pointer;">添加视频信息</a></div>
 
                     <div style="width: 100%; height: 50px; border-bottom: 1px #d3e0e9 solid;">
-                        <form action="{{ route('file.lists') }}" method="get">
+                        <form action="{{ route('task.lists') }}" method="get">
                         <table cellpadding="0" cellspacing="0" style="margin-top:8px;">
                             <tr>
                                 <td width="100" style="text-align: right;">文件名称：</td><td width="120"><input type="text" name="filename"  value="{{ isset($_GET['filename']) ? $_GET['filename'] : '' }}" placeholder="输入文件名称" class="form-control"></td>
@@ -59,9 +59,9 @@
                                         <td style="text-align: center;">{{$item->created_at}}</td>
                                         <td style="text-align: center;">
                                             @if($item->status == 0 || $item->status == 3)
-                                                <a href="/file/{{$item->id}}/edit">编辑</a>&nbsp;|&nbsp;<a href="javascript:del_item({{$item->id}});">删除</a>
+                                                <a href="/task/{{$item->id}}/edit">编辑</a>&nbsp;|&nbsp;<a href="javascript:del_item({{$item->id}});">删除</a>
                                             @elseif($item->status == 2)
-                                                <a href="/file/download?path={{ $item->xml_path }}">下载xml</a>
+                                                <a href="/task/download?path={{ $item->xml_path }}">下载xml</a>
                                             @endif
                                         </td>
                                     </tr>
@@ -85,13 +85,13 @@
     </div>
     <script>
         function del_item(id) {
-            $.post('/file/'+id, {_method:'DELETE', _token:'{{csrf_token()}}'}, function(res){
+            $.post('/task/'+id, {_method:'DELETE', _token:'{{csrf_token()}}'}, function(res){
                 alert(res);
                 location.reload();
             });
         }
         function reset_list() {
-            location.href = '/file/lists';
+            location.href = '/task/lists';
         }
     </script>
 @endsection

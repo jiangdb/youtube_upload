@@ -62,7 +62,7 @@
                                     @if(Auth::user()->is_admin == 1)
                                         <li><a href="{{ route('admin.index') }}">系统用户管理</a></li>
                                     @endif
-                                    <li><a href="{{ route('file.lists') }}">视频管理</a></li>
+                                    <li><a href="{{ route('task.lists') }}">视频管理</a></li>
                                     <li>
                                         <a href="{{ route('logout') }}"
                                             onclick="event.preventDefault();

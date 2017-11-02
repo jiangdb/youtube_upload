@@ -11,7 +11,7 @@
 |
 */
 
-Route::redirect('/', '/file');
+Route::redirect('/', '/task');
 
 Auth::routes();
 
@@ -19,11 +19,11 @@ Route::post('/admin/publish', 'AdminController@publish')->name('admin.publish');
 
 Route::resource('admin', 'AdminController');
 
-Route::get('/file/lists', 'FileServerController@lists')->name('file.lists');
+Route::get('/task/lists', 'TaskController@lists')->name('task.lists');
 
-Route::get('/file/download', 'FileServerController@download');
+Route::get('/task/download', 'TaskController@download');
 
-Route::resource('file', 'FileServerController', [
+Route::resource('task', 'TaskController', [
     'except' => ['create', 'show']
 ]);
 
