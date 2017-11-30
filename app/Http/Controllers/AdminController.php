@@ -78,7 +78,7 @@ class AdminController extends Controller
     public function edit($id)
     {
         $info = DB::table('users')->where('id', $id)->first();
-        if(empty($info)) {
+        if (empty($info)) {
             return redirect('/admin');
         } else {
             return view('admin.edit', ['form' => $info]);
@@ -114,15 +114,17 @@ class AdminController extends Controller
             return ($input->old_paaaword == $input->password) ? false : true;
         });
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         } else {
             $update_datas = array('name' => $request->input('name'), 'email' => $request->input('email'));
-            if($request->input('password') != $request->input('old_password')) {
+            if ($request->input('password') != $request->input('old_password')) {
                 $update_datas['password'] = bcrypt($request->input('password'));
             }
 
-            if(empty($user->id)) $user->id = $request->input('id');
+            if (empty($user->id)) {
+                $user->id = $request->input('id');
+            }
             $res = $user::where('id', $user->id)->update($update_datas);
 
             $error = $res ? '修改成功' : '修改失败';
@@ -139,11 +141,10 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
-        if(intval($id) > 0){
+        if (intval($id) > 0) {
             $res = DB::table('users')->delete('id', $id);
             return $res ? "删除成功" : "删除失败";
-
-        }else{
+        } else {
             return "无效的操作!";
         }
     }

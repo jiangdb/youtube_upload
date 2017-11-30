@@ -10,6 +10,8 @@ use Illuminate\Http\File;
 
 class TaskCommand extends Command
 {
+    const LOG_TAG = "[youtube:check_video_handle]: ";
+
     /**
      * The name and signature of the console command.
      *
@@ -41,52 +43,53 @@ class TaskCommand extends Command
      */
     public function handle()
     {
-        Log::info(null, array('task_command' => 'handle start.....'));
+        Log::info(self::LOG_TAG . 'handle start.....');
         DB::table('task')->where('status', '<>', 2)->orderBy('id', 'asc')->chunk(100, function ($videos) {
-            foreach($videos as $video) {
+            foreach ($videos as $video) {
                 DB::table('task')->where('id', $video->id)->update(['status' => 1]);
                 $failed = 0;
-                if(Storage::disk('local')->exists($video->csv_path)) {
-
+                if (Storage::disk('local')->exists($video->csv_path)) {
                     $path_arr = explode('/', $video->csv_path);
                     $name_arr = explode('.', $path_arr[1]);
 
                     //检测youtube上的视频目录并把视频result.xml保存到本地一份
-                    $shell = '/bin/bash ' . app_path() . '/Console/Commands/filecheck.sh '.$video->filename;
+                    $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytdownload.sh '.$video->filename . ' status-*.xml'.' '.storage_path().'/app/csv_temp/';
                     $res = trim(shell_exec($shell));
-                    Log::info(null, array('task_command' => '获取youtube视频文件目录'.$video->filename.'下的xml文件的结果：'.$res));
+                    Log::info(self::LOG_TAG . '获取youtube视频文件目录'.$video->filename.'下的xml文件的结果：'.$res);
 
-                    if($res == -1) {
+                    if ($res == -1) {
                         $failed = 1;
-                        Log::info(null, array('task_command' => 'youtube视频文件目录'.$video->filename.'不存在.'));
+                        Log::info(self::LOG_TAG . array('task_command' => 'youtube视频文件目录'.$video->filename.'不存在.'));
                     } elseif ($res == 1) {
                         $failed = 1;
-                        Log::info(null, array('task_command' => 'youtube视频文件目录'.$video->filename.'下的xml文件不存在.'));
+                        Log::info(self::LOG_TAG . 'youtube视频文件目录'.$video->filename.'下的xml文件不存在.');
                     } else {
                         $res_arr = explode('-', $res);
-                        if($res_arr[0] == 'status') {
+                        if ($res_arr[0] == 'status') {
                             $local_xml_name = $res;                 //存在本地的视频xml文件名称
 
                             if (Storage::disk('local')->exists($path_arr[0].'/'.$local_xml_name) == false) {
                                 $failed = 1;
-                                Log::info(null, array('task_command' => 'youtube视频文件目录'.$video->filename.'下的'.$local_xml_name.'文件未下载到本地.'));
+                                Log::info(self::LOG_TAG . 'youtube视频文件目录'.$video->filename.'下的'.$local_xml_name.'文件未下载到本地.');
                             } else {
                                 $video_xml = Storage::disk('local')->get($path_arr[0].'/'.$local_xml_name);
 
                                 $data = simplexml_load_string($video_xml, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NOBLANKS);
-                                if (is_object($data)) $data = (array)$data;
+                                if (is_object($data)) {
+                                    $data = (array)$data;
+                                }
                                 $action = $data['action'][4]->action;
 
                                 if (empty($action)) {
                                     $failed = 1;
-                                    Log::info(null, array('task_command' => 'youtube视频文件目录'.$video->filename.'下的'.$local_xml_name.'文件数据格式匹配不上.'));
+                                    Log::info(self::LOG_TAG . 'youtube视频文件目录'.$video->filename.'下的'.$local_xml_name.'文件数据格式匹配不上.');
                                 } else {
                                     $action = (array)$action;
                                     $vid = $action['id'];
 
-                                    if(empty($vid)) {
+                                    if (empty($vid)) {
                                         $failed = 1;
-                                        Log::info(null, array('task_command' => 'youtube视频文件目录'.$video->filename.'下的'.$local_xml_name.'文件未有Video ID.'));
+                                        Log::info(self::LOG_TAG . 'youtube视频文件目录'.$video->filename.'下的'.$local_xml_name.'文件未有Video ID.');
                                     } else {
 
                                         //组合csv文件，同步
@@ -94,21 +97,22 @@ class TaskCommand extends Command
                                         $handle = fopen($csv_path, 'r');
                                         $csv_datas = array();
                                         $n = 0;
-                                        while($d = fgetcsv($handle)){
-                                            if($n > 0 && !empty($d[2]))
+                                        while ($d = fgetcsv($handle)) {
+                                            if ($n > 0 && !empty($d[2])) {
                                                 $d[0] = $vid;
+                                            }
                                             $csv_datas[] = $d;
                                             $n++;
                                         }
                                         fclose($handle);
 
-                                        if(empty($csv_datas)) {
+                                        if (empty($csv_datas)) {
                                             $failed = 1;
-                                            Log::info(null, array('task_command' => 'csv文件'.$video->csv_path.'是空文件.'));
+                                            Log::info(self::LOG_TAG . 'csv文件'.$video->csv_path.'是空文件.');
                                         } else {
 
                                             //组合新的csv文件
-                                            $new_csv_path = storage_path('app').'/'.$path_arr[0].'/'.$name_arr[0].'_new.'.$name_arr[1];
+                                            $new_csv_path = $name_arr[0].'_new.'.$name_arr[1];
 
                                             $fp = fopen($new_csv_path, 'w');
 
@@ -120,38 +124,35 @@ class TaskCommand extends Command
 
                                             //创建新的视频目录存放组合的csv
                                             $create_csv_dir = $video->filename.'_new';
-                                            $shell = '/bin/bash ' . app_path() . '/Console/Commands/filesync.sh '.$create_csv_dir.' '.$new_csv_path.' '.$path_arr[1];
+                                            $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh '.storage_path('app').'/'.$path_arr[0].'/ '.$new_csv_path.' '.$create_csv_dir;
                                             $res = shell_exec($shell);
 
-                                            if($res == 1) {
+                                            if ($res == 1) {
                                                 DB::table('task')->where('id', $video->id)->update(['status' => 2, 'xml_name' => $local_xml_name, 'vid' => $vid]);
-                                                Log::info(null, array('task_command' => '视频文件目录'.$video->filename.',视频ID:'.$vid.'操作成功.'));
+                                                Log::info(self::LOG_TAG . '视频文件目录'.$video->filename.',视频ID:'.$vid.'操作成功.');
                                             } else {
                                                 $failed = 1;
-                                                Log::info(null, array('task_command' => '视频文件目录'.$video->filename.',视频ID:'.$vid.'操作失败.'));
+                                                Log::info(self::LOG_TAG . '视频文件目录'.$video->filename.',视频ID:'.$vid.'操作失败.');
                                             }
-
                                         }
                                     }
                                 }
                             }
-
                         } else {
                             $failed = 1;
-                            Log::info(null, array('task_command' => 'youtube视频文件目录'.$video->filename.'下的xml文件无效.'));
+                            Log::info(self::LOG_TAG . 'youtube视频文件目录'.$video->filename.'下的xml文件无效.');
                         }
                     }
-
                 } else {
                     $failed = 1;
-                    Log::info(null, array('task_command' => 'csv文件'.$video->csv_path.'不存在.'));
+                    Log::info(self::LOG_TAG . 'csv文件'.$video->csv_path.'不存在.');
                 }
 
-                if($failed == 1) {
+                if ($failed == 1) {
                     DB::table('task')->where('id', $video->id)->update(['status' => 3]);
                 }
             }
         });
-        Log::info(null, array('task_command' => 'handle over.....'));
+        Log::info(self::LOG_TAG . 'handle over.....');
     }
 }
