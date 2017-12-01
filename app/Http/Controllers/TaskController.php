@@ -38,29 +38,29 @@ class TaskController extends Controller
     public function lists()
     {
         $sear = array();
-        if(!empty($_GET['filename'])) {
+        if (!empty($_GET['filename'])) {
             $sear[] = array('filename', 'like', '%'.$_GET['filename'].'%');
         }
-        if(!empty($_GET['status'])) {
+        if (!empty($_GET['status'])) {
             $_GET['status'] = $_GET['status'] == -1 ? 0 : $_GET['status'];
             $sear[] = array('status', '=', intval($_GET['status']));
         }
-        if(!empty($_GET['begin'])) {
+        if (!empty($_GET['begin'])) {
             $sear[] = array('created_at', '>=', $_GET['begin']);
         }
-        if(!empty($_GET['end'])) {
+        if (!empty($_GET['end'])) {
             $sear[] = array('created_at', '<=', $_GET['end']);
         }
-        if(Auth::user()->is_admin == 0) {
+        if (Auth::user()->is_admin == 0) {
             $sear[] = array('uid', '=', Auth::id());
         }
 
         $list = Task::where($sear)->orderBy('updated_at', 'desc')->paginate(15);
-        if(!empty($list)) {
+        if (!empty($list)) {
             foreach ($list as $key => $val) {
-                if($val->status == 2) {
+                if ($val->status == 2) {
                     $arr = explode('/', $val->csv_path);
-                    if(Storage::disk('local')->exists($arr[0].'/'.$val->xml_name)) {
+                    if (Storage::disk('local')->exists($arr[0].'/'.$val->xml_name)) {
                         $val['xml_path'] = $arr[0].'/'.$val->xml_name;
                     } else {
                         $val['xml_path'] = '';
@@ -94,7 +94,7 @@ class TaskController extends Controller
         $real_filename = null;
 
         $file = $request->file('csv_path');
-        if($file->isValid()) {
+        if ($file->isValid()) {
             $real_filename = $file->getClientOriginalName();
             $newFileName = time().random_int(10000, 99999).".csv";
             $csv_path = Storage::disk('local')->putFileAs('csv_temp', $file, $newFileName);
@@ -133,7 +133,7 @@ class TaskController extends Controller
     public function edit(Task $file)
     {
         $info = $file->find($file->id);
-        if(empty($info)) {
+        if (empty($info)) {
             return redirect('/task');
         } else {
             return view('task.index', ['form' => $info]);
@@ -162,13 +162,13 @@ class TaskController extends Controller
             return empty($input->csv_path) ? false : true;
         });
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->with('form', $file);
         } else {
             $update_datas = array('filename' => $request->input('filename'));
 
             $csv = $request->file('csv_path');
-            if(!empty($csv) && $csv->isValid()) {
+            if (!empty($csv) && $csv->isValid()) {
                 $update_datas['csv_filename'] = $csv->getClientOriginalName();
                 $update_datas['csv_path'] = Storage::disk('local')->putFileAs('csv_temp', $csv, time().random_int(10000, 99999).".csv");
             } elseif ($request->filled('csv_path_val')) {
@@ -191,23 +191,23 @@ class TaskController extends Controller
      */
     public function destroy(Task $file)
     {
-        if(intval($file->id) > 0){
+        if (intval($file->id) > 0) {
             $info = $file->find($file->id);
 
             $res = $file->delete();
-            if($res){
-                if(!empty($info->csv_path)){
+            if ($res) {
+                if (!empty($info->csv_path)) {
                     $csv_path = $info->csv_path;
                     $real_path = storage_path('app').'/'.$csv_path;
-                    if(file_exists($real_path)){
+                    if (file_exists($real_path)) {
                         Storage::delete($csv_path);
                     }
                 }
                 return "删除成功!";
-            }else{
+            } else {
                 return "删除失败!";
             }
-        }else{
+        } else {
             return "无效的操作!";
         }
     }
