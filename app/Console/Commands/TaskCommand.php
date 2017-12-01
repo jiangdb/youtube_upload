@@ -54,6 +54,7 @@ class TaskCommand extends Command
 
                     //检测youtube上的视频目录并把视频result.xml保存到本地一份
                     $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytdownload.sh '.$video->filename . ' status-*.xml'.' '.storage_path().'/app/csv_temp/';
+                    Log::info(self::LOG_TAG . 'ytdownload：'.$shell);
                     $res = trim(shell_exec($shell));
                     Log::info(self::LOG_TAG . '获取youtube视频文件目录'.$video->filename.'下的xml文件的结果：'.$res);
 
@@ -125,6 +126,7 @@ class TaskCommand extends Command
                                             //创建新的视频目录存放组合的csv
                                             $create_csv_dir = $video->filename.'_new';
                                             $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh '.storage_path('app').'/'.$path_arr[0].'/ '.$new_csv_path.' '.$create_csv_dir;
+                                            Log::info(self::LOG_TAG . 'ytupload：'.$shell);
                                             $res = shell_exec($shell);
 
                                             if ($res == 1) {
