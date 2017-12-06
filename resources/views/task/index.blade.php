@@ -15,9 +15,15 @@
                                 <input type="hidden" name="id" value="{{$form->id}}">
                             @endif
                             <div class="form-group">
-                                <label for="filename" class="col-md-3 control-label">视频文件名称</label>
+                                <label for="filename" class="col-md-3 control-label">xml文件目录</label>
                                 <div class="col-md-6">
                                     <input id="filename" type="text" class="form-control" name="filename" value="{{ old('filename') ?  old('filename') : (!empty($form) ? $form->filename : '') }}" required autofocus>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="xmlname" class="col-md-3 control-label">xml文件名称</label>
+                                <div class="col-md-6">
+                                    <input id="xmlname" type="text" class="form-control" name="xmlname" value="{{ old('xmlname') ?  old('xmlname') : (!empty($form) ? $form->xmlname : '') }}" required autofocus>
                                 </div>
                             </div>
                             <div class="form-group">

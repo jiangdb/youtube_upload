@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Task;
-use App\Http\Requests\TaskPost;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\TaskPost;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
@@ -37,22 +37,22 @@ class TaskController extends Controller
      */
     public function lists()
     {
-        $sear = array();
+        $sear = [];
         if (!empty($_GET['filename'])) {
-            $sear[] = array('filename', 'like', '%'.$_GET['filename'].'%');
+            $sear[] = ['filename', 'like', '%' . $_GET['filename'] . '%'];
         }
         if (!empty($_GET['status'])) {
             $_GET['status'] = $_GET['status'] == -1 ? 0 : $_GET['status'];
-            $sear[] = array('status', '=', intval($_GET['status']));
+            $sear[] = ['status', '=', intval($_GET['status'])];
         }
         if (!empty($_GET['begin'])) {
-            $sear[] = array('created_at', '>=', $_GET['begin']);
+            $sear[] = ['created_at', '>=', $_GET['begin']];
         }
         if (!empty($_GET['end'])) {
-            $sear[] = array('created_at', '<=', $_GET['end']);
+            $sear[] = ['created_at', '<=', $_GET['end']];
         }
         if (Auth::user()->is_admin == 0) {
-            $sear[] = array('uid', '=', Auth::id());
+            $sear[] = ['uid', '=', Auth::id()];
         }
 
         $list = Task::where($sear)->orderBy('updated_at', 'desc')->paginate(15);
@@ -60,8 +60,8 @@ class TaskController extends Controller
             foreach ($list as $key => $val) {
                 if ($val->status == 2) {
                     $arr = explode('/', $val->csv_path);
-                    if (Storage::disk('local')->exists($arr[0].'/'.$val->xml_name)) {
-                        $val['xml_path'] = $arr[0].'/'.$val->xml_name;
+                    if (Storage::disk('local')->exists($arr[0] . '/' . $val->xml_name)) {
+                        $val['xml_path'] = $arr[0] . '/' . $val->xml_name;
                     } else {
                         $val['xml_path'] = '';
                     }
@@ -96,16 +96,17 @@ class TaskController extends Controller
         $file = $request->file('csv_path');
         if ($file->isValid()) {
             $real_filename = $file->getClientOriginalName();
-            $newFileName = time().random_int(10000, 99999).".csv";
+            $newFileName = time() . random_int(10000, 99999) . ".csv";
             $csv_path = Storage::disk('local')->putFileAs('csv_temp', $file, $newFileName);
         }
 
         $res = Task::create([
-            'uid'           => Auth::id(),
-            'filename'      => $request->input('filename'),
-            'csv_path'      => $csv_path,
-            'csv_filename'  => $real_filename,
-            'vid'           => ''
+            'uid' => Auth::id(),
+            'filename' => $request->input('filename'),
+            'xmlname' => $request->input('xmlname'),
+            'csv_path' => $csv_path,
+            'csv_filename' => $real_filename,
+            'vid' => '',
         ]);
 
         $stat = $res ? 1 : -1;
@@ -150,12 +151,14 @@ class TaskController extends Controller
     public function update(Request $request, Task $file)
     {
         $validator = Validator::make($request->all(), [
-            'filename' => 'required|max:255'
+            'filename' => 'required|max:255',
         ], [
-            'filename.required' => '文件名称不能为空',
-            'filename.max'      => '文件名称长度不能大于255个字节',
+            'filename.required' => 'xml目录名称不能为空',
+            'filename.max' => 'xml目录名称长度不能大于255个字节',
+            'xmlname.required' => 'xml文件名称不能为空',
+            'xmlname.max' => 'xml文件名称长度不能大于255个字节',
             'csv_path.required' => '请上传视频csv文件',
-            'csv_path.mimes'    => '上传的文件必须是csv格式'
+            'csv_path.mimes' => '上传的文件必须是csv格式',
         ]);
 
         $validator->sometimes('csv_path', 'required|file:csv', function ($input) {
@@ -165,12 +168,15 @@ class TaskController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->with('form', $file);
         } else {
-            $update_datas = array('filename' => $request->input('filename'));
+            $update_datas = [
+                'filename' => $request->input('filename'),
+                'xmlname' => $request->input('xmlname'),
+            ];
 
             $csv = $request->file('csv_path');
             if (!empty($csv) && $csv->isValid()) {
                 $update_datas['csv_filename'] = $csv->getClientOriginalName();
-                $update_datas['csv_path'] = Storage::disk('local')->putFileAs('csv_temp', $csv, time().random_int(10000, 99999).".csv");
+                $update_datas['csv_path'] = Storage::disk('local')->putFileAs('csv_temp', $csv, time() . random_int(10000, 99999) . ".csv");
             } elseif ($request->filled('csv_path_val')) {
                 $update_datas['csv_path'] = $request->input('csv_path_val');
             }
@@ -198,7 +204,7 @@ class TaskController extends Controller
             if ($res) {
                 if (!empty($info->csv_path)) {
                     $csv_path = $info->csv_path;
-                    $real_path = storage_path('app').'/'.$csv_path;
+                    $real_path = storage_path('app') . '/' . $csv_path;
                     if (file_exists($real_path)) {
                         Storage::delete($csv_path);
                     }
@@ -218,6 +224,6 @@ class TaskController extends Controller
      */
     public function download(Request $request)
     {
-        return response()->download(storage_path('app').'/'.$request->get('path'));
+        return response()->download(storage_path('app') . '/' . $request->get('path'));
     }
 }
