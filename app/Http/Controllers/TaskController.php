@@ -131,9 +131,9 @@ class TaskController extends Controller
      * @param  \App\Task  $file
      * @return \Illuminate\Http\Response
      */
-    public function edit(Task $file)
+    public function edit(Task $file, $task_id)
     {
-        $info = $file->find($file->id);
+        $info = $file->find($task_id);
         if (empty($info)) {
             return redirect('/task');
         } else {
@@ -181,7 +181,7 @@ class TaskController extends Controller
                 $update_datas['csv_path'] = $request->input('csv_path_val');
             }
 
-            $res = $file::where('id', $file->id)->update($update_datas);
+            $res = $file::where('id', $request->id)->update($update_datas);
 
             $stat = $res ? 1 : -1;
 
@@ -192,15 +192,15 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Task  $file
+     * @param int $task_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $file)
+    public function destroy($task_id)
     {
-        if (intval($file->id) > 0) {
-            $info = $file->find($file->id);
+        if (intval($task_id) > 0) {
+            $info = Task::find($task_id);
 
-            $res = $file->delete();
+            $res = $info->delete();
             if ($res) {
                 if (!empty($info->csv_path)) {
                     $csv_path = $info->csv_path;

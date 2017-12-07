@@ -14,6 +14,6 @@ class Task extends Model
      * @var array
      */
     protected $fillable = [
-        'uid', 'filename', 'csv_path', 'csv_filename', 'vid'
+        'uid', 'filename', 'xmlname', 'csv_path', 'csv_filename', 'vid'
     ];
 }
