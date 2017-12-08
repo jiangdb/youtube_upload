@@ -129,7 +129,7 @@ class TaskCommand extends Command
                                             $res = shell_exec($shell);
                                             Log::info(self::LOG_TAG . '上传youtube视频文件目录' . $create_csv_dir . '下的csv文件的结果：' . $res);
 
-                                            if ($res == 1) {
+                                            if (strpos($res, $new_csv)) {
                                                 DB::table('task')->where('id', $video->id)->update(['status' => 2, 'xml_name' => $local_xml_name, 'vid' => $vid]);
                                                 Log::info(self::LOG_TAG . '视频文件目录' . $video->filename . ',视频ID:' . $vid . '操作成功.');
                                             } else {
