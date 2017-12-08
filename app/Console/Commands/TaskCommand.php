@@ -57,6 +57,7 @@ class TaskCommand extends Command
                     $res = trim(shell_exec($shell));
                     Log::info(self::LOG_TAG . '获取youtube视频文件目录' . $video->filename . '下的xml文件的结果：' . $res);
 
+                    $res = "Completed: 2K bytes transferred in 0 seconds(53K bits/sec), in 1 file. status-test4.xml ";
                     if ($res == 1) {
                         $failed = 1;
                         Log::info(self::LOG_TAG . 'youtube视频文件目录' . $video->filename . '下的xml文件不存在.');
@@ -71,19 +72,12 @@ class TaskCommand extends Command
                                 Log::info(self::LOG_TAG . 'youtube视频文件目录' . $video->filename . '下的' . $local_xml_name . '文件未下载到本地.');
                             } else {
                                 $video_xml = Storage::disk('local')->get($path_arr[0] . '/' . $local_xml_name);
-
-                                $data = simplexml_load_string($video_xml, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NOBLANKS);
-                                if (is_object($data)) {
-                                    $data = (array) $data;
-                                }
-                                $action = $data['action'][4]->action;
-
-                                if (empty($action)) {
-                                    $failed = 1;
-                                    Log::info(self::LOG_TAG . 'youtube视频文件目录' . $video->filename . '下的' . $local_xml_name . '文件数据格式匹配不上.');
-                                } else {
-                                    $action = (array) $action;
-                                    $vid = $action['id'];
+                                if (strpos($video_xml, 'type="Video ID">')) {
+                                    $p1 = strpos($video_xml, 'type="Video ID">');
+                                    $p1 += strlen('type="Video ID">');
+                                    $p2 = strpos($video_xml, '</id>', $p1);
+                                    $vid = trim(substr($video_xml, $p1, $p2 - $p1));
+                                    Log::info(self::LOG_TAG . 'youtube视频vid:' . $vid . '.');
 
                                     if (empty($vid)) {
                                         $failed = 1;
@@ -138,6 +132,9 @@ class TaskCommand extends Command
                                             }
                                         }
                                     }
+                                } else {
+                                    $failed = 1;
+                                    Log::info(self::LOG_TAG . 'youtube视频文件目录' . $video->filename . '下的' . $local_xml_name . '文件数据格式匹配不上.');
                                 }
                             }
                         } else {
