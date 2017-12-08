@@ -127,6 +127,7 @@ class TaskCommand extends Command
                                             $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh ' . storage_path('app') . '/' . $path_arr[0] . '/ ' . $new_csv . ' ' . $create_csv_dir;
                                             Log::info(self::LOG_TAG . 'ytupload：' . $shell);
                                             $res = shell_exec($shell);
+                                            Log::info(self::LOG_TAG . '上传youtube视频文件目录' . $create_csv_dir . '下的csv文件的结果：' . $res);
 
                                             if ($res == 1) {
                                                 DB::table('task')->where('id', $video->id)->update(['status' => 2, 'xml_name' => $local_xml_name, 'vid' => $vid]);
