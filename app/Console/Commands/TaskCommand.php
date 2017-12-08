@@ -110,7 +110,9 @@ class TaskCommand extends Command
                                         } else {
 
                                             //组合新的csv文件
-                                            $new_csv_path = $name_arr[0] . '_new.' . $name_arr[1];
+                                            $new_csv = $name_arr[0] . '_new.' . $name_arr[1];
+                                            $new_csv_path = storage_path('app').'/'.$path_arr[0].'/'.$new_csv;
+                                            Log::info(self::LOG_TAG . '新组合的csv文件路径:' . $new_csv_path . '.');
 
                                             $fp = fopen($new_csv_path, 'w');
 
@@ -122,7 +124,7 @@ class TaskCommand extends Command
 
                                             //创建新的视频目录存放组合的csv
                                             $create_csv_dir = $video->filename . '_new';
-                                            $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh ' . storage_path('app') . '/' . $path_arr[0] . '/ ' . $new_csv_path . ' ' . $create_csv_dir;
+                                            $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh ' . storage_path('app') . '/' . $path_arr[0] . '/ ' . $new_csv . ' ' . $create_csv_dir;
                                             Log::info(self::LOG_TAG . 'ytupload：' . $shell);
                                             $res = shell_exec($shell);
 
