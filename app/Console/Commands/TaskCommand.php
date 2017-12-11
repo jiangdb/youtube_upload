@@ -47,6 +47,7 @@ class TaskCommand extends Command
             foreach ($videos as $video) {
                 DB::table('task')->where('id', $video->id)->update(['status' => 1]);
                 $failed = 0;
+                $xml_name = '';
                 if (Storage::disk('local')->exists($video->csv_path)) {
                     $path_arr = explode('/', $video->csv_path);
                     $name_arr = explode('.', $path_arr[1]);
@@ -60,12 +61,12 @@ class TaskCommand extends Command
                     if (strpos($res, $video->xmlname)) {
                         $local_xml_name = 'status-'.$video->xmlname; //存在本地的视频xml文件名称
 
-                        Log::info(self::LOG_TAG . '下载到本地XML文件路径:' . $path_arr[0] . '/' . $local_xml_name . '.');
-
                         if (Storage::disk('local')->exists($path_arr[0] . '/' . $local_xml_name) == false) {
                             $failed = 1;
                             Log::info(self::LOG_TAG . 'youtube视频文件目录' . $video->filename . '下的' . $local_xml_name . '文件未下载到本地.');
                         } else {
+                            Log::info(self::LOG_TAG . '下载到本地XML文件路径:' . $path_arr[0] . '/' . $local_xml_name . '.');
+                            $xml_name = $local_xml_name;
                             $video_xml = Storage::disk('local')->get($path_arr[0] . '/' . $local_xml_name);
                             if (strpos($video_xml, 'type="Video ID">')) {
                                 $p1 = strpos($video_xml, 'type="Video ID">');
@@ -94,6 +95,7 @@ class TaskCommand extends Command
 
                                     if (empty($csv_datas)) {
                                         $failed = 1;
+                                        $xml_name = '';
                                         Log::info(self::LOG_TAG . 'csv文件' . $video->csv_path . '是空文件.');
                                     } else {
                                         //组合新的csv文件
@@ -121,6 +123,7 @@ class TaskCommand extends Command
                                             Log::info(self::LOG_TAG . '视频文件目录' . $video->filename . ',视频ID:' . $vid . '操作成功.');
                                         } else {
                                             $failed = 1;
+                                            $xml_name = '';
                                             Log::info(self::LOG_TAG . '视频文件目录' . $video->filename . ',视频ID:' . $vid . '操作失败.');
                                         }
                                     }
@@ -139,7 +142,7 @@ class TaskCommand extends Command
                 }
 
                 if ($failed == 1) {
-                    DB::table('task')->where('id', $video->id)->update(['status' => 3]);
+                    DB::table('task')->where('id', $video->id)->update(['status' => 3, 'xml_name' => $xml_name]);
                 }
             }
         });

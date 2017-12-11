@@ -60,6 +60,9 @@
                                         <td style="text-align: center;">
                                             @if($item->status == 0 || $item->status == 3)
                                                 <a href="/task/{{$item->id}}/edit">编辑</a>&nbsp;|&nbsp;<a href="javascript:del_item({{$item->id}});">删除</a>
+                                                @if(!empty($item->xml_path))
+                                                    &nbsp|&nbsp<a href="/task/download?path={{ $item->xml_path }}">下载xml</a>
+                                                @endif
                                             @elseif($item->status == 2)
                                                 <a href="/task/download?path={{ $item->xml_path }}">下载xml</a>
                                             @endif
