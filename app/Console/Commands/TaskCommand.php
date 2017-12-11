@@ -78,7 +78,6 @@ class TaskCommand extends Command
                                     $failed = 1;
                                     Log::info(self::LOG_TAG . 'youtube视频文件目录' . $video->filename . '下的' . $local_xml_name . '文件未有Video ID.');
                                 } else {
-
                                     //组合csv文件，同步
                                     $csv_path = storage_path('app') . '/' . $video->csv_path;
                                     $handle = fopen($csv_path, 'r');
@@ -97,7 +96,6 @@ class TaskCommand extends Command
                                         $failed = 1;
                                         Log::info(self::LOG_TAG . 'csv文件' . $video->csv_path . '是空文件.');
                                     } else {
-
                                         //组合新的csv文件
                                         $new_csv = $name_arr[0] . '_new.' . $name_arr[1];
                                         $new_csv_path = storage_path('app').'/'.$path_arr[0].'/'.$new_csv;
