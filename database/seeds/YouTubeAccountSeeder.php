@@ -14,12 +14,16 @@ class YouTubeAccountSeeder extends Seeder
     {
         $account = [];
         array_push($account, [
-            'account_name' => 'test',
-            'ssk_key_filename' => 'test.key',
+            'display_name' => '8sian',
+            'account_name' => 'asp-8sian2',
+            'ssk_key_filename' => '8sian',
         ]);
 
         foreach ($account as $key => $value) {
-            YouTubeAccount::create($value);
+            $count = YouTubeAccount::where('account_name', $value['account_name'])->count();
+            if ($count < 1) {
+                YouTubeAccount::create($value);
+            }
         }
     }
 }

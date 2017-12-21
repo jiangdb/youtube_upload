@@ -46,7 +46,7 @@
                                         <td style="text-align: center;">{{$item->id}}</td>
                                         <td style="text-align: center;">{{$item->filename}}</td>
                                         <td style="text-align: center;"><a href="{{asset($item->csv_path)}}">{{$item->csv_filename}}</a></td>
-                                        <td style="text-align: center;">{{$item->youtube_account_name}}</td>
+                                        <td style="text-align: center;">{{$item->display_name}}</td>
                                         <td style="text-align: center;">
                                             @if($item->status == 1)
                                                 处理中

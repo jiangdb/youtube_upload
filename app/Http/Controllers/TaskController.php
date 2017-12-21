@@ -70,7 +70,7 @@ class TaskController extends Controller
                 }
                 if (!empty($val->youtube_account_id)) {
                     $account = YouTubeAccount::where('id', $val->youtube_account_id)->first();
-                    $val->youtube_account_name = $account->account_name;
+                    $val->display_name = $account->display_name;
                 }
                 $list[$key] = $val;
             }

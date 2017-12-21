@@ -14,6 +14,6 @@ class YouTubeAccount extends Model
      * @var array
      */
     protected $fillable = [
-        'account_name', 'ssk_key_filename'
+        'display_name', 'account_name', 'ssk_key_filename'
     ];
 }

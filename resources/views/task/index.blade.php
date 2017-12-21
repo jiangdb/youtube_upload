@@ -39,7 +39,7 @@
                                     <select id="youtube_account_id" class="form-control" name="youtube_account_id" required autofocus>
                                         <option value="">请选择</option>
                                         @foreach($youtube_accounts as $account)
-                                            <option value="{{ $account->id }}" {{ old('youtube_account_id') ?  (old('youtube_account_id') == $account->id ? 'selected' : '') : (!empty($form) ? ($form->youtube_account_id  == $account->id ? 'selected' : '') : '') }}>{{ $account->account_name }}</option>
+                                            <option value="{{ $account->id }}" {{ old('youtube_account_id') ?  (old('youtube_account_id') == $account->id ? 'selected' : '') : (!empty($form) ? ($form->youtube_account_id  == $account->id ? 'selected' : '') : '') }}>{{ $account->display_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
