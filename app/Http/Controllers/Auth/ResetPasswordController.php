@@ -42,6 +42,6 @@ class ResetPasswordController extends Controller
      */
     protected function redirectTo()
     {
-        return route('task.index');
+        return route('manage');
     }
 }

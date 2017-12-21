@@ -11,7 +11,11 @@
 |
 */
 
-Route::redirect('/', '/task');
+Route::redirect('/', '/manage');
+
+Route::get('/manage', function () {
+    return view('manage');
+})->name('manage')->middleware('auth');
 
 Auth::routes();
 
@@ -30,3 +34,7 @@ Route::resource('task', 'TaskController', [
 Route::get('/csv_temp/{one?}', function () {
     App\Util\FileHandle::fileStorageShow();
 });
+
+Route::resource('genfile', 'GenFileController', [
+    'only' => ['index', 'store']
+]);
