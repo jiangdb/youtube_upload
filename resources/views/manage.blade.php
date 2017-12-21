@@ -8,12 +8,12 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-md-6 square text-center"><a href="{{ route('task.index') }}">part1</a></div>
-        <div class="col-md-6 square text-center"><a href="{{ route('genfile.index') }}">part2</a></div>
+        <div class="col-md-6 square text-center"><a href="{{ route('task.index') }}">VIDEO TOOLS</a></div>
+        <div class="col-md-6 square text-center"><a href="{{ route('genfile.index') }}">GENCSV</a></div>
     </div>
     <div class="row">
-        <div class="col-md-6 square text-center"><a href="#">part3</a></div>
-        <div class="col-md-6 square text-center"><a href="#">part4</a></div>
+        <div class="col-md-6 square text-center"></div>
+        <div class="col-md-6 square text-center"></div>
     </div>
 </div>
 </body>
