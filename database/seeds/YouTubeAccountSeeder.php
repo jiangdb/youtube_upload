@@ -16,7 +16,7 @@ class YouTubeAccountSeeder extends Seeder
         array_push($account, [
             'display_name' => '8sian',
             'account_name' => 'asp-8sian2',
-            'ssk_key_filename' => '8sian',
+            'ssk_key_filename' => 'Youtube_8sian',
         ]);
 
         foreach ($account as $key => $value) {
