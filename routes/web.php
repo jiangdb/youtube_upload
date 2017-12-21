@@ -13,6 +13,8 @@
 
 Auth::routes();
 
+Route::redirect('/', '/manage');
+
 Route::get('/manage', function () {
     return view('manage');
 })->name('manage')->middleware('auth');
