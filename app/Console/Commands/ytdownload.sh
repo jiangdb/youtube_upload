@@ -15,9 +15,9 @@ if [ $# -ne 5 ]; then
     exit 1
 fi
 if [[ "$1" == "/" ]]; then
-    ascp -P 33001 -i ~/.ssh/Youtube\ $5 --src-base=$1 $4@asia.aspera.googleusercontent.com:$1$2 $3
+    ascp -P 33001 -i ~/.ssh/$5 --src-base=$1 $4@asia.aspera.googleusercontent.com:$1$2 $3
 else
-    ascp -P 33001 -i ~/.ssh/Youtube\ $5 --src-base=$1 $4@asia.aspera.googleusercontent.com:$1/$2 $3
+    ascp -P 33001 -i ~/.ssh/$5 --src-base=$1 $4@asia.aspera.googleusercontent.com:$1/$2 $3
 fi
 if [ $? -eq 0 ]; then
 	echo $2
