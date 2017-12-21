@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use App\YouTubeAccount;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskPost;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return view('task.index');
+        $youtube_accounts = YouTubeAccount::all();
+        return view('task.index', compact('youtube_accounts'));
     }
 
     /**
@@ -65,6 +67,10 @@ class TaskController extends Controller
                     } else {
                         $val['xml_path'] = '';
                     }
+                }
+                if (!empty($val->youtube_account_id)) {
+                    $account = YouTubeAccount::where('id', $val->youtube_account_id)->first();
+                    $val->youtube_account_name = $account->account_name;
                 }
                 $list[$key] = $val;
             }
@@ -107,6 +113,7 @@ class TaskController extends Controller
             'csv_path' => $csv_path,
             'csv_filename' => $real_filename,
             'vid' => '',
+            'youtube_account_id' => $request->input('youtube_account_id'),
         ]);
 
         $stat = $res ? 1 : -1;
@@ -137,7 +144,8 @@ class TaskController extends Controller
         if (empty($info)) {
             return redirect('/task');
         } else {
-            return view('task.index', ['form' => $info]);
+            $youtube_accounts = YouTubeAccount::all();
+            return view('task.index', ['form' => $info, 'youtube_accounts' => $youtube_accounts]);
         }
     }
 
@@ -152,6 +160,7 @@ class TaskController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'filename' => 'required|max:255',
+            'youtube_account_id' => 'required',
         ], [
             'filename.required' => 'xml目录名称不能为空',
             'filename.max' => 'xml目录名称长度不能大于255个字节',
@@ -159,6 +168,7 @@ class TaskController extends Controller
             'xmlname.max' => 'xml文件名称长度不能大于255个字节',
             'csv_path.required' => '请上传视频csv文件',
             'csv_path.mimes' => '上传的文件必须是csv格式',
+            'youtube_account_id.required' => '请选择YouTube账户',
         ]);
 
         $validator->sometimes('csv_path', 'required|file:csv', function ($input) {
@@ -171,6 +181,7 @@ class TaskController extends Controller
             $update_datas = [
                 'filename' => $request->input('filename'),
                 'xmlname' => $request->input('xmlname'),
+                'youtube_account_id' => $request->input('youtube_account_id'),
             ];
 
             $csv = $request->file('csv_path');

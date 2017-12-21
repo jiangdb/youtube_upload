@@ -34,6 +34,17 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="xmlname" class="col-md-3 control-label">YouTube账户</label>
+                                <div class="col-md-6">
+                                    <select id="youtube_account_id" class="form-control" name="youtube_account_id" required autofocus>
+                                        <option value="">请选择</option>
+                                        @foreach($youtube_accounts as $account)
+                                            <option value="{{ $account->id }}" {{ old('youtube_account_id') ?  (old('youtube_account_id') == $account->id ? 'selected' : '') : (!empty($form) ? ($form->youtube_account_id  == $account->id ? 'selected' : '') : '') }}>{{ $account->account_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <div class="col-md-8" style="text-align: center;">
                                     <button type="submit" class="btn btn-primary" style="width: 90px;">
                                         提交
@@ -53,6 +64,10 @@
 
         @if($errors->has('csv_path'))
             alert("{{ $errors->first('csv_path') }}");
+        @endif
+
+        @if($errors->has('youtube_account_id'))
+            alert("{{ $errors->first('youtube_account_id') }}");
         @endif
 
         @if(Session::has('stat'))

@@ -25,7 +25,8 @@ class TaskPost extends FormRequest
     {
         return [
             'filename' => 'required|unique:task|max:255',
-            'csv_path' => 'required|file:csv'
+            'csv_path' => 'required|file:csv',
+            'youtube_account_id' => 'required'
         ];
     }
 
@@ -39,7 +40,8 @@ class TaskPost extends FormRequest
             'filename.unique'   => '文件名称已存在',
             'filename.max'      => '文件名称长度不能大于255个字节',
             'csv_path.required' => '请上传视频csv文件',
-            'csv_path.mimes'    => '上传的文件必须是csv格式'
+            'csv_path.mimes'    => '上传的文件必须是csv格式',
+            'youtube_account_id.required' => '请选择YouTube账户'
         ];
     }
 }
