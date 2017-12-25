@@ -215,6 +215,16 @@ class GenFileController extends Controller
         }
     }
 
+    public function translates()
+    {
+        return view('genfile.translates');
+    }
+
+    public function translatesStore(Request $request)
+    {
+
+    }
+
     private function handleVideo(SimpleXMLElement $e, $lang)
     {
         $titleLength = mb_strlen($_POST['VideoTitle' . $lang], 'UTF-8');

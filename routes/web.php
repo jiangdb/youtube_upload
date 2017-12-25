@@ -31,6 +31,8 @@ Route::resource('task', 'TaskController', [
 Route::resource('genfile', 'GenFileController', [
     'only' => ['index', 'store']
 ]);
+Route::get('genfile/translates', 'GenFileController@translates')->name('genfile.translates');
+Route::post('genfile/translates_store', 'GenFileController@translatesStore')->name('genfile.translates.store');
 
 Route::get('/csv_temp/{one?}', function () {
     App\Util\FileHandle::fileStorageShow();

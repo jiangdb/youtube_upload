@@ -377,6 +377,7 @@
             <input class="submit" type="submit" name="submit" value="生成XML" onclick="check('xml')" style=" width:200px; height:80px;">
             <input class="submit" type="submit" name="submit" value="生成CSV" onclick="check('csv1')" style=" width:200px; height:80px;">
             <input class="submit" type="button" name="button" value="生成多语言CSV" onclick="csv2Submit()" style=" width:200px; height:80px;">
+            <a href="{{ route('genfile.translates') }}"><input class="submit" type="button" name="button" value="XML-->CSV" style=" width:200px; height:80px;"></a>
         </div>
     </div>
 
