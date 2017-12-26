@@ -222,7 +222,73 @@ class GenFileController extends Controller
 
     public function translatesStore(Request $request)
     {
+        $filexml=$request->file('xmlFile');
+        if (file_exists($filexml)) {
+            $xml = simplexml_load_file($filexml);
+            $csv_dir = storage_path('app') . '/csv/';
+            if (is_dir($csv_dir) == false) {
+                \Storage::makeDirectory('csv');
+            }
+            $file_name = pathinfo($request->file('xmlFile')->getClientOriginalName(), PATHINFO_FILENAME) . '.csv';
+            $header_data = [
+                'filename', 'channel', 'add_asset_labels', 'title', 'description', 'keywords', 'spoken_language', 'category', 'privacy', 'notify_subscribers', 'custom_thumbnail', 'ownership', 'block_outside_ownership', 'usage_policy', 'enable_content_id', 'reference_exclusions', 'match_policy',             'ad_break_times', 'playlist_id'
+            ];
+            $keywords = [];
+            foreach ($xml->video->localized_info->keyword as $keyword) {
+                $keywords[] = $keyword;
+            }
+            $keywords = implode(',', $keywords);
+            $ad_break_times = [];
+            foreach ($xml->video_breaks as $breaks) {
+                foreach ($breaks as $break) {
+                    $ad_break_times[] = $break->attributes()->time;
+                }
+            }
+            $ad_break_times = implode(',', $ad_break_times);
+            foreach ($xml->children() as $child) {
+                if ($child->getName() == 'relationship') {
+                    if (isset($child->item->attributes()->path) && strpos($child->item->attributes()->path, "@type='match'")) {
+                        $match_policy = $this->getBetween($child->item[1]->attributes()->path, "'" , "'");
+                    }
+                }
+            }
+            $data = [
+                [
+                    "filename" => $xml->file->filename, //A
+                    "channel" => $xml->playlist->attributes()->channel, //B
+                    "add_asset_labels" => '', //C
+                    "title" => $xml->video->localized_info->title, //D
+                    "description" => $xml->video->localized_info->description, //E
+                    "keywords" => $keywords, //F
+                    "spoken_language" => 'zh-Hans', //G
+                    "category" => $xml->video->genre, //H
+                    "privacy" => $xml->video->public, //I
+                    "notify_subscribers" => isset($xml->video->notify_subscribers) ? $xml->video->notify_subscribers : '', //J
+                    "custom_thumbnail" => '', //K
+                    "ownership" => '', //L
+                    "block_outside_ownership" => '', //M
+                    "usage_policy" => $this->getBetween($xml->claim->attributes()->rights_policy, "'" , "'"), //N
+                    "enable_content_id" => $match_policy ? 'Yes' : 'No', //O
+                    "reference_exclusions" => '', //P
+                    "match_policy" => $match_policy, //Q
+                    "ad_break_times" => $ad_break_times, //R
+                    "playlist_id" => $xml->playlist->attributes()->id, //S
+                ]
+            ];
+            $csv_file = fopen($csv_dir . $file_name, 'w');
+            fwrite($csv_file, implode($header_data, ',') . "\n" . implode($data[0], ','));
+            fclose($csv_file);
+            $this->exportCsv($data, $header_data, $file_name);
+        }
+    }
 
+    private function getBetween($content,$start,$end){
+        $r = explode($start, $content);
+        if (isset($r[1])){
+            $r = explode($end, $r[1]);
+            return $r[0];
+        }
+        return '';
     }
 
     private function handleVideo(SimpleXMLElement $e, $lang)
