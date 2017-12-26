@@ -350,7 +350,7 @@ class GenFileController extends Controller
                 }
                 $row = $data[$i];
                 foreach ($row as $key => $value) {
-                    $row[$key] = iconv('utf-8', 'gbk', $value);
+                    $row[$key] = $value;
                 }
                 fputcsv($fp, $row);
             }
