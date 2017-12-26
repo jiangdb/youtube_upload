@@ -237,14 +237,14 @@ class GenFileController extends Controller
             foreach ($xml->video->localized_info->keyword as $keyword) {
                 $keywords[] = $keyword;
             }
-            $keywords = implode(',', $keywords);
+            $keywords = implode('|', $keywords);
             $ad_break_times = [];
             foreach ($xml->video_breaks as $breaks) {
                 foreach ($breaks as $break) {
                     $ad_break_times[] = $break->attributes()->time;
                 }
             }
-            $ad_break_times = implode(',', $ad_break_times);
+            $ad_break_times = implode('|', $ad_break_times);
             foreach ($xml->children() as $child) {
                 if ($child->getName() == 'relationship') {
                     if (isset($child->item->attributes()->path) && strpos($child->item->attributes()->path, "@type='match'")) {
