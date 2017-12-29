@@ -45,8 +45,8 @@ class TaskCommand extends Command
         Log::info(self::LOG_TAG . 'handle start.....');
         DB::table('task')
             ->join('youtube_account', 'task.youtube_account_id', '=', 'youtube_account.id')
-            ->where('status', '<>', 2)
-            ->orderBy('id', 'asc')
+            ->where('task.status', '<>', 2)
+            ->orderBy('task.id', 'asc')
             ->chunk(100, function ($videos) {
                 foreach ($videos as $video) {
                     DB::table('task')->where('id', $video->id)->update(['status' => 1]);
