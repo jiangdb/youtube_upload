@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use DOMDocument;
-use Illuminate\Http\Request;
 use SimpleXMLElement;
+use Illuminate\Http\Request;
 
 class GenFileController extends Controller
 {
@@ -16,7 +16,7 @@ class GenFileController extends Controller
     public function store(Request $request)
     {
         if ($_POST['type'] == 'xml') {
-            $xml = simplexml_load_file(resource_path().'/assets/YYYYMMDDbenpaobaxiogndi3.xml');
+            $xml = simplexml_load_file(resource_path() . '/assets/YYYYMMDDbenpaobaxiogndi3.xml');
             $xml->addAttribute('notification_email', $_POST['Notification']);
             $xml->addAttribute('channel', $_POST['Channel']);
 
@@ -177,7 +177,7 @@ class GenFileController extends Controller
                 [$_POST['VideoFile'], $_POST['Channel'], $asset_labels, $_POST['VideoTitleChs'], $_POST['VideoDesChs'], $keywords, 'zh-cn', 'Entertainment', $_POST['PublishImmediately'] == 'yes' ? 'public' : 'private', $_POST['NotifySubscribers'] == 'yes' ? 'yes' : 'no', $_POST['Thumbnail'], '', '', $_POST['UsagePolicy'], empty($_POST['MatchPolicy']) ? '' : 'yes', '', $_POST['MatchPolicy'], $breaks, $_POST['Playlist']],
             ];
             $header_data = [
-                'filename', 'channel', 'add_asset_labels', 'title', 'description', 'keywords', 'spoken_language', 'category', 'privacy', 'notify_subscribers', 'custom_thumbnail', 'ownership', 'block_outside_ownership', 'usage_policy', 'enable_content_id', 'reference_exclusions', 'match_policy',             'ad_break_times', 'playlist_id'
+                'filename', 'channel', 'add_asset_labels', 'title', 'description', 'keywords', 'spoken_language', 'category', 'privacy', 'notify_subscribers', 'custom_thumbnail', 'ownership', 'block_outside_ownership', 'usage_policy', 'enable_content_id', 'reference_exclusions', 'match_policy', 'ad_break_times', 'playlist_id',
             ];
             $file_name = $_POST['VideoFile'] . '.csv';
 
@@ -201,7 +201,7 @@ class GenFileController extends Controller
                 'video_id', 'is_primary_language', 'language', 'title', 'description', 'keywords',
             ];
             $hash = hash('md5', $_POST['VideoTitleEn']);
-            $file_name_multi_lang = 'multi-lang-' .$hash. '.csv';
+            $file_name_multi_lang = 'multi-lang-' . $hash . '.csv';
 
             $csv_dir = storage_path('app') . '/csv/';
             if (is_dir($csv_dir) == false) {
@@ -222,7 +222,7 @@ class GenFileController extends Controller
 
     public function translatesStore(Request $request)
     {
-        $filexml=$request->file('xmlFile');
+        $filexml = $request->file('xmlFile');
         if (file_exists($filexml)) {
             $xml = simplexml_load_file($filexml);
             $csv_dir = storage_path('app') . '/csv/';
@@ -231,7 +231,7 @@ class GenFileController extends Controller
             }
             $file_name = pathinfo($request->file('xmlFile')->getClientOriginalName(), PATHINFO_FILENAME) . '.csv';
             $header_data = [
-                'filename', 'channel', 'add_asset_labels', 'title', 'description', 'keywords', 'spoken_language', 'category', 'privacy', 'notify_subscribers', 'custom_thumbnail', 'ownership', 'block_outside_ownership', 'usage_policy', 'enable_content_id', 'reference_exclusions', 'match_policy',             'ad_break_times', 'playlist_id'
+                'filename', 'channel', 'add_asset_labels', 'title', 'description', 'keywords', 'spoken_language', 'category', 'privacy', 'notify_subscribers', 'custom_thumbnail', 'ownership', 'block_outside_ownership', 'usage_policy', 'enable_content_id', 'reference_exclusions', 'match_policy', 'ad_break_times', 'playlist_id',
             ];
             $keywords = [];
             foreach ($xml->video->localized_info->keyword as $keyword) {
@@ -248,7 +248,7 @@ class GenFileController extends Controller
             foreach ($xml->children() as $child) {
                 if ($child->getName() == 'relationship') {
                     if (isset($child->item->attributes()->path) && strpos($child->item->attributes()->path, "@type='match'")) {
-                        $match_policy = $this->getBetween($child->item[1]->attributes()->path, "'" , "'");
+                        $match_policy = $this->getBetween($child->item[1]->attributes()->path, "'", "'");
                     }
                 }
             }
@@ -262,18 +262,18 @@ class GenFileController extends Controller
                     "keywords" => $keywords, //F
                     "spoken_language" => 'zh-Hans', //G
                     "category" => $xml->video->genre, //H
-                    "privacy" => $xml->video->public, //I
+                    "privacy" => $xml->video->public == 'True' ? 'public' : 'private', //I
                     "notify_subscribers" => isset($xml->video->notify_subscribers) ? $xml->video->notify_subscribers : '', //J
                     "custom_thumbnail" => '', //K
                     "ownership" => '', //L
                     "block_outside_ownership" => '', //M
-                    "usage_policy" => $this->getBetween($xml->claim->attributes()->rights_policy, "'" , "'"), //N
+                    "usage_policy" => $this->getBetween($xml->claim->attributes()->rights_policy, "'", "'"), //N
                     "enable_content_id" => $match_policy ? 'Yes' : 'No', //O
                     "reference_exclusions" => '', //P
                     "match_policy" => $match_policy, //Q
                     "ad_break_times" => $ad_break_times, //R
                     "playlist_id" => $xml->playlist->attributes()->id, //S
-                ]
+                ],
             ];
             $csv_file = fopen($csv_dir . $file_name, 'w');
             fwrite($csv_file, implode($header_data, ',') . "\n" . implode($data[0], ','));
@@ -282,9 +282,10 @@ class GenFileController extends Controller
         }
     }
 
-    private function getBetween($content,$start,$end){
+    private function getBetween($content, $start, $end)
+    {
         $r = explode($start, $content);
-        if (isset($r[1])){
+        if (isset($r[1])) {
             $r = explode($end, $r[1]);
             return $r[0];
         }
@@ -350,7 +351,7 @@ class GenFileController extends Controller
                 }
                 $row = $data[$i];
                 foreach ($row as $key => $value) {
-                    $row[$key] = $value;
+                    $row[$key] = mb_convert_encoding($value, 'gbk', 'utf-8');
                 }
                 fputcsv($fp, $row);
             }
