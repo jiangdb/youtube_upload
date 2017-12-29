@@ -57,7 +57,7 @@ class TaskCommand extends Command
                         $name_arr = explode('.', $path_arr[1]);
 
                         //检测youtube上的视频目录并把视频result.xml保存到本地一份
-                        $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytdownload.sh ' . $video->filename . ' status-' . $video->xmlname . ' ' . storage_path() . '/app/csv_temp/ ' . $video->account_name . ' ' . $video->ssh_key_filename;
+                        $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytdownload.sh ' . $video->filename . ' status-' . $video->xmlname . ' ' . storage_path() . '/app/csv_temp/ ' . $video->account_name . ' ' . $video->ssk_key_filename;
                         Log::info(self::LOG_TAG . 'ytdownload：' . $shell);
                         $res = trim(shell_exec($shell));
                         Log::info(self::LOG_TAG . '获取youtube视频文件目录' . $video->filename . '下的xml文件的结果：' . $res);
@@ -117,7 +117,7 @@ class TaskCommand extends Command
 
                                             //创建新的视频目录存放组合的csv
                                             $create_csv_dir = $video->filename . '_new';
-                                            $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh ' . storage_path('app') . '/' . $path_arr[0] . '/ ' . $new_csv . ' ' . $create_csv_dir . ' ' . $video->account_name . ' ' . $video->ssh_key_filename;
+                                            $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh ' . storage_path('app') . '/' . $path_arr[0] . '/ ' . $new_csv . ' ' . $create_csv_dir . ' ' . $video->account_name . ' ' . $video->ssk_key_filename;
                                             Log::info(self::LOG_TAG . 'ytupload：' . $shell);
                                             $res = shell_exec($shell);
                                             Log::info(self::LOG_TAG . '上传youtube视频文件目录' . $create_csv_dir . '下的csv文件的结果：' . $res);
