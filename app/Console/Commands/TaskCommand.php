@@ -49,8 +49,6 @@ class TaskCommand extends Command
             ->orderBy('task.id', 'asc')
             ->chunk(100, function ($videos) {
                 foreach ($videos as $video) {
-                    $affect = DB::update("update task set uid = 2 where id = ".$video->id);
-                    Log::info("affect:::".$affect);
                     DB::table('task')->where('id', $video->id)->update(['status' => 1]);
                     $failed = 0;
                     $xml_name = '';
