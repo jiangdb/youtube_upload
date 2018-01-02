@@ -45,10 +45,12 @@ class TaskCommand extends Command
         Log::info(self::LOG_TAG . 'handle start.....');
         DB::table('task')
             ->join('youtube_account', 'task.youtube_account_id', '=', 'youtube_account.id')
+            ->select('task.*', 'youtube_account.ssk_key_filename', 'youtube_account.account_name')
             ->where('task.status', '<>', 2)
             ->orderBy('task.id', 'asc')
             ->chunk(100, function ($videos) {
                 foreach ($videos as $video) {
+                    Log::info(self::LOG_TAG . 'VideoID:' . $video->id);
                     DB::table('task')->where('id', $video->id)->update(['status' => 1]);
                     $failed = 0;
                     $xml_name = '';
@@ -57,13 +59,13 @@ class TaskCommand extends Command
                         $name_arr = explode('.', $path_arr[1]);
 
                         //检测youtube上的视频目录并把视频result.xml保存到本地一份
-                        $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytdownload.sh ' . $video->filename . ' status-' . $video->xmlname . ' ' . storage_path() . '/app/csv_temp/ ' . $video->account_name . ' ' . $video->ssk_key_filename;
+                        $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytdownload.sh ' . $video->filename . ' status-' . $video->xmlname . '.xml ' . storage_path() . '/app/csv_temp/ ' . $video->account_name . ' ' . $video->ssk_key_filename;
                         Log::info(self::LOG_TAG . 'ytdownload：' . $shell);
                         $res = trim(shell_exec($shell));
                         Log::info(self::LOG_TAG . '获取youtube视频文件目录' . $video->filename . '下的xml文件的结果：' . $res);
 
                         if (strpos($res, $video->xmlname)) {
-                            $local_xml_name = 'status-'.$video->xmlname; //存在本地的视频xml文件名称
+                            $local_xml_name = 'status-'.$video->xmlname.'.xml'; //存在本地的视频xml文件名称
 
                             if (Storage::disk('local')->exists($path_arr[0] . '/' . $local_xml_name) == false) {
                                 $failed = 1;
@@ -117,7 +119,8 @@ class TaskCommand extends Command
 
                                             //创建新的视频目录存放组合的csv
                                             $create_csv_dir = $video->filename . '_new';
-                                            $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh ' . storage_path('app') . '/' . $path_arr[0] . '/ ' . $new_csv . ' ' . $create_csv_dir . ' ' . $video->account_name . ' ' . $video->ssk_key_filename;
+                                            $delivery_complete = resource_path() . '/assets/delivery.complete';
+                                            $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh ' . storage_path('app') . '/' . $path_arr[0] . '/ ' . $new_csv . ' ' . $create_csv_dir . ' ' . $video->account_name . ' ' . $video->ssk_key_filename . ' ' . $delivery_complete;
                                             Log::info(self::LOG_TAG . 'ytupload：' . $shell);
                                             $res = shell_exec($shell);
                                             Log::info(self::LOG_TAG . '上传youtube视频文件目录' . $create_csv_dir . '下的csv文件的结果：' . $res);
