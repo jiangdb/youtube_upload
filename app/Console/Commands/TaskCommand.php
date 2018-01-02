@@ -119,7 +119,8 @@ class TaskCommand extends Command
 
                                             //创建新的视频目录存放组合的csv
                                             $create_csv_dir = $video->filename . '_new';
-                                            $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh ' . storage_path('app') . '/' . $path_arr[0] . '/ ' . $new_csv . ' ' . $create_csv_dir . ' ' . $video->account_name . ' ' . $video->ssk_key_filename;
+                                            $delivery_complete = resource_path() . '/assets/delivery.complete';
+                                            $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytupload.sh ' . storage_path('app') . '/' . $path_arr[0] . '/ ' . $new_csv . ' ' . $create_csv_dir . ' ' . $video->account_name . ' ' . $video->ssk_key_filename . ' ' . $delivery_complete;
                                             Log::info(self::LOG_TAG . 'ytupload：' . $shell);
                                             $res = shell_exec($shell);
                                             Log::info(self::LOG_TAG . '上传youtube视频文件目录' . $create_csv_dir . '下的csv文件的结果：' . $res);
