@@ -5,7 +5,7 @@
 #$3 远程文件目录  /D
 #$4 YouTube账户
 #$5 YouTube秘钥文件名
-if [ $# -ne 3 ]; then
+if [ $# -ne 5 ]; then
     echo "usage: sh ytupload.sh [Origin Folder] [Origin File] [Destination Folder] [YouTube account name] [ssh key filename]"
     echo "       [Origin Folder]: / or /A/B"
     echo "       [Origin File]: a.xml or /C/a.xml"
