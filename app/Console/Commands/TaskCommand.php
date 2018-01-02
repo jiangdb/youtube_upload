@@ -63,7 +63,7 @@ class TaskCommand extends Command
                         Log::info(self::LOG_TAG . '获取youtube视频文件目录' . $video->filename . '下的xml文件的结果：' . $res);
 
                         if (strpos($res, $video->xmlname)) {
-                            $local_xml_name = 'status-'.$video->xmlname; //存在本地的视频xml文件名称
+                            $local_xml_name = 'status-'.$video->xmlname.'.xml'; //存在本地的视频xml文件名称
 
                             if (Storage::disk('local')->exists($path_arr[0] . '/' . $local_xml_name) == false) {
                                 $failed = 1;
