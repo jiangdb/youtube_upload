@@ -43,6 +43,7 @@ class TaskCommand extends Command
     public function handle()
     {
         Log::info(self::LOG_TAG . 'handle start.....');
+        DB::table('task')->where('id', 5)->update(['status' => 1]); return;
         DB::table('task')
             ->join('youtube_account', 'task.youtube_account_id', '=', 'youtube_account.id')
             ->where('task.status', '<>', 2)
