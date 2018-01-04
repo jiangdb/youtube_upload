@@ -18,8 +18,10 @@ if [ $# -ne 6 ]; then
 fi
 if [[ "$1" == "/" ]]; then
     ascp -P 33001  -d -i ~/.ssh/$5 --src-base=$1  $1$2 $6 $4@asia.aspera.googleusercontent.com:$3
+    ascp -P 33001  -d -i ~/.ssh/$5 $6 $4@asia.aspera.googleusercontent.com:$3
 else
     ascp -P 33001  -d -i ~/.ssh/$5 --src-base=$1  $1/$2 $6 $4@asia.aspera.googleusercontent.com:$3
+    ascp -P 33001  -d -i ~/.ssh/$5 $6 $4@asia.aspera.googleusercontent.com:$3
 fi
 if [ $? -eq 0 ]; then
 	echo $2
