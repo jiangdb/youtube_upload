@@ -6,7 +6,7 @@
 #$4 YouTube账户
 #$5 YouTube秘钥文件名
 #$6 CSV文件发送成功标志文件  /C/a.mp4
-if [ $# -ne 5 ]; then
+if [ $# -ne 6 ]; then
     echo "usage: sh ytupload.sh [Origin Folder] [Origin File] [Destination Folder] [YouTube account name] [ssh key filename] [csv delivery complete]"
     echo "       [Origin Folder]: / or /A/B"
     echo "       [Origin File]: a.xml or /C/a.xml"
