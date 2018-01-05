@@ -147,18 +147,14 @@
             var fields = [
                 'VideoTitleCht',
                 'textarea13',
-                'textarea14',
                 'textfield14',
                 'textarea15',
-                'textarea16',
             ];
             var name = [
                 'title in traditional chinese',
                 'description in traditional chinese',
-                'keywords in traditional chinese',
                 'title in english',
                 'description in english',
-                'keywords in english',
             ];
             for (var i=0; i<fields.length;i++) {
                 var val = document.getElementById(fields[i]).value;
@@ -169,10 +165,8 @@
             }
             document.getElementById('titleEn').value = (document.getElementById('textfield14').value);
             document.getElementById('desEn').value = (document.getElementById('textarea15').value);
-            document.getElementById('keywordsEn').value = (document.getElementById('textarea16').value);
             document.getElementById('titleCht').value = (document.getElementById('VideoTitleCht').value);
             document.getElementById('desCht').value = (document.getElementById('textarea13').value);
-            document.getElementById('keywordsCht').value = (document.getElementById('textarea14').value);
             document.getElementById('csv2').submit();
         }
     </script>
@@ -334,7 +328,6 @@
 
     <div class="tianlan">
         <div style="float:left; height:50px; line-height:50px; width:480px; text-align: center;border-right:5px solid #FFF;" ><span class="neirong01">description:</span></div>
-        <div style="float:left; height:50px; line-height:50px; width:400px; text-align: center" ><span class="neirong01">keywords:</span></div>
     </div>
 
     <div class="biaoti">
@@ -342,7 +335,6 @@
             <textarea name="VideoDesCht" id="textarea13" style=" font-size:18px" cols="35" rows="6" placeholder="description in traditional chinese" ></textarea>
         </div>
         <div style="float:left; height:190px; line-height:190px; width:400px; text-align: center;margin-top:10px;margin-left:40px" >
-            <textarea name="VideoKeywordsCht" id="textarea14" style=" font-size:18px" cols="35" rows="6" placeholder="keywords in traditional chinese" ></textarea>
         </div>
     </div>
 
@@ -359,7 +351,6 @@
 
     <div class="tianlan">
         <div style="float:left; height:50px; line-height:50px; width:480px; text-align: center;border-right:5px solid #FFF;" ><span class="neirong01">description:</span></div>
-        <div style="float:left; height:50px; line-height:50px; width:400px; text-align: center" ><span class="neirong01">keywords:</span></div>
     </div>
 
     <div class="biaoti">
@@ -367,7 +358,6 @@
             <textarea name="VideoDesEn" id="textarea15" style=" font-size: 18px" cols="35" rows="6" placeholder="description in english" ></textarea>
         </div>
         <div style="float:left; height:190px; line-height:190px; width:400px; text-align: center;margin-top:10px;margin-left:40px" >
-            <textarea name="VideoKeywordsEn" id="textarea16" style=" font-size: 18px" cols="35" rows="6" placeholder="keywords in english" ></textarea>
         </div>
     </div>
     <input id="type" name="type" value="" type="hidden">

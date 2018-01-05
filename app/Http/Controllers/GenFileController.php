@@ -191,14 +191,12 @@ class GenFileController extends Controller
             fclose($csv_file);
             $this->exportCsv($data, $header_data, $file_name);
         } else {
-            $keywords_cht = implode('|', explode("\r\n", trim($_POST['VideoKeywordsCht'])));
-            $keywords_en = implode('|', explode("\r\n", trim($_POST['VideoKeywordsEn'])));
             $data_multi_lang = [
-                ['', 'No', 'en-US', $_POST['VideoTitleEn'], $_POST['VideoDesEn'], $keywords_en],
-                ['', 'No', 'zh-Hant', $_POST['VideoTitleCht'], $_POST['VideoDesCht'], $keywords_cht],
+                ['', 'No', 'en-US', $_POST['VideoTitleEn'], $_POST['VideoDesEn']],
+                ['', 'No', 'zh-Hant', $_POST['VideoTitleCht'], $_POST['VideoDesCht']],
             ];
             $header_data_multi_lang = [
-                'video_id', 'is_primary_language', 'language', 'title', 'description', 'keywords',
+                'video_id', 'is_primary_language', 'language', 'title', 'description',
             ];
             $hash = hash('md5', $_POST['VideoTitleEn']);
             $file_name_multi_lang = 'multi-lang-' . $hash . '.csv';
