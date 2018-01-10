@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container" style="width:90%;">
+    <div class="container">
         <div class="row">
             <div class="col-md-12 center-block" style="float: none;">
                 <div class="panel panel-default">
@@ -27,17 +27,17 @@
                     </div>
 
                     <div class="panel-body">
-                        <table cellspacing="0" cellpadding="4" width="100%" align="center" class="table table-hover">
+                        <table cellspacing="0" cellpadding="0" align="center" class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th style="text-align: center;">ID编号</th>
+                                    <th style="text-align: center; width:60px;">ID编号</th>
                                     <th style="text-align: center;">xml文件目录</th>
                                     <th style="text-align: center;">xml文件名称</th>
                                     <th style="text-align: center;">CSV文件</th>
-                                    <th style="text-align: center;">YouTube账户</th>
-                                    <th style="text-align: center;">处理状态</th>
-                                    <th style="text-align: center;">添加日期</th>
-                                    <th style="text-align: center;">操作</th>
+                                    <th style="text-align: center; width:120px;">YouTube账户</th>
+                                    <th style="text-align: center; width:100px;">处理状态</th>
+                                    <th style="text-align: center; width:100px;">添加日期</th>
+                                    <th style="text-align: center; width:100px;">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,9 +45,9 @@
                                     @foreach($list as $item)
                                     <tr>
                                         <td style="text-align: center;">{{$item->id}}</td>
-                                        <td style="text-align: center;">{{$item->filename}}</td>
-                                        <td style="text-align: center;">{{$item->xmlname}}</td>
-                                        <td style="text-align: center;"><a href="{{asset($item->csv_path)}}">{{$item->csv_filename}}</a></td>
+                                        <td><span style="display: block; max-width:200px; word-wrap:break-word;">{{$item->filename}}</span></td>
+                                        <td><span style="display: block; max-width:200px; word-wrap:break-word;">{{$item->xmlname}}</span></td>
+                                        <td><span style="display: block; max-width:200px; word-wrap:break-word;"><a href="{{asset($item->csv_path)}}">{{$item->csv_filename}}</a></span></td>
                                         <td style="text-align: center;">{{$item->display_name}}</td>
                                         <td style="text-align: center;">
                                             @if($item->status == 1)
@@ -83,7 +83,7 @@
                             @if(count($list) > 0)
                             <tfoot>
                                 <tr>
-                                    <td colspan="6">{{$list->appends($_GET)->links()}}</td>
+                                    <td colspan="8">{{$list->appends($_GET)->links()}}</td>
                                 </tr>
                             </tfoot>
                             @endif
