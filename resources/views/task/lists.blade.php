@@ -44,12 +44,12 @@
                                 @if(count($list) > 0)
                                     @foreach($list as $item)
                                     <tr>
-                                        <td style="text-align: center;">{{$item->id}}</td>
-                                        <td style="text-align: center;">{{$item->filename}}</td>
-                                        <td style="text-align: center;">{{$item->xmlname}}</td>
-                                        <td style="text-align: center;"><a href="{{asset($item->csv_path)}}">{{$item->csv_filename}}</a></td>
-                                        <td style="text-align: center;">{{$item->display_name}}</td>
-                                        <td style="text-align: center;">
+                                        <td style="text-align: center; width:12.5%;">{{$item->id}}</td>
+                                        <td style="text-align: center; width:12.5%;">{{$item->filename}}</td>
+                                        <td style="text-align: center; width:12.5%;">{{$item->xmlname}}</td>
+                                        <td style="text-align: center; width:12.5%;"><a href="{{asset($item->csv_path)}}">{{$item->csv_filename}}</a></td>
+                                        <td style="text-align: center; width:12.5%;">{{$item->display_name}}</td>
+                                        <td style="text-align: center; width:12.5%;">
                                             @if($item->status == 1)
                                                 处理中
                                             @elseif($item->status == 2)
@@ -60,8 +60,8 @@
                                                 未开始
                                             @endif
                                         </td>
-                                        <td style="text-align: center;">{{$item->created_at}}</td>
-                                        <td style="text-align: center;">
+                                        <td style="text-align: center; width:12.5%;">{{$item->created_at}}</td>
+                                        <td style="text-align: center; width:12.5%;">
                                             @if($item->status == 0 || $item->status == 3)
                                                 <a href="/task/{{$item->id}}/edit">编辑</a>
                                                 @if(!empty($item->xml_path))
