@@ -31,7 +31,8 @@
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">ID编号</th>
-                                    <th style="text-align: center;">文件名称</th>
+                                    <th style="text-align: center;">xml文件目录</th>
+                                    <th style="text-align: center;">xml文件名称</th>
                                     <th style="text-align: center;">CSV文件</th>
                                     <th style="text-align: center;">YouTube账户</th>
                                     <th style="text-align: center;">处理状态</th>
@@ -45,6 +46,7 @@
                                     <tr>
                                         <td style="text-align: center;">{{$item->id}}</td>
                                         <td style="text-align: center;">{{$item->filename}}</td>
+                                        <td style="text-align: center;">{{$item->xmlname}}</td>
                                         <td style="text-align: center;"><a href="{{asset($item->csv_path)}}">{{$item->csv_filename}}</a></td>
                                         <td style="text-align: center;">{{$item->display_name}}</td>
                                         <td style="text-align: center;">
@@ -61,13 +63,16 @@
                                         <td style="text-align: center;">{{$item->created_at}}</td>
                                         <td style="text-align: center;">
                                             @if($item->status == 0 || $item->status == 3)
-                                                <a href="/task/{{$item->id}}/edit">编辑</a>&nbsp;|&nbsp;<a href="javascript:del_item({{$item->id}});">删除</a>
+                                                <a href="/task/{{$item->id}}/edit">编辑</a>
                                                 @if(!empty($item->xml_path))
                                                     &nbsp|&nbsp<a href="/task/download?path={{ $item->xml_path }}">下载xml</a>
+                                                @else
+                                                    &nbsp;|&nbsp;
                                                 @endif
                                             @elseif($item->status == 2)
-                                                <a href="/task/download?path={{ $item->xml_path }}">下载xml</a>
+                                                <a href="/task/download?path={{ $item->xml_path }}">下载xml</a>&nbsp;|&nbsp;
                                             @endif
+                                            <a href="javascript:del_item({{$item->id}});">删除</a>
                                         </td>
                                     </tr>
                                     @endforeach
