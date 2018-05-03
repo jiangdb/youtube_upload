@@ -269,6 +269,12 @@
         </div>
     </div>
     <div class="biaoti">
+        <div style="float:left; height:200px; line-height:200px; width:300px;border-right:5px solid #FFF; " ><span><span class="zhushi">* </span>Ad types：</span></div>
+        <div style="float:left; width:580px; margin-top:20px;padding-left:10px;">
+            <textarea name="ad_types" id="ad-types" style=" font-size: 25px" cols="45" rows="5" placeholder="please set ad types" required="">instream_standard|instream_trueview|invideo_overlay|product_listing|display</textarea>
+        </div >
+    </div>
+    <div class="biaoti">
         <div style="float:left; height:200px; line-height:200px; width:300px;border-right:5px solid #FFF; " ><span><span class="zhushi">* </span>Adbreak：</span></div>
         <div style="float:left; width:580px; margin-top:20px;padding-left:10px;">
             <textarea name="AdBreak" id="Adbreak" style=" font-size: 25px" cols="45" rows="5" placeholder="HH:MM:SS" required=""></textarea>
