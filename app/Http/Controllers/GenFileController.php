@@ -170,14 +170,15 @@ class GenFileController extends Controller
             header('Content-Length: ' . filesize($filename));
             @readfile($filename);
         } elseif ($_POST['type'] == 'csv1') {
-            $breaks = implode('|', explode("\r\n", trim($_POST['AdBreak'])));
+            $ad_types = implode('|', explode("\r\n", trim($_POST['ad_types'])));
+            $breaks = '0|'.implode('|', explode("\r\n", trim($_POST['AdBreak'])));
             $keywords = implode('|', explode("\r\n", trim($_POST['VideoKeywordsChs'])));
             $asset_labels = implode('|', explode("\r\n", trim($_POST['asset_labels'])));
             $data = [
-                [$_POST['VideoFile'], $_POST['Channel'], $asset_labels, $_POST['VideoTitleChs'], $_POST['VideoDesChs'], $keywords, 'zh-cn', 'Entertainment', $_POST['PublishImmediately'] == 'yes' ? 'public' : 'private', $_POST['NotifySubscribers'] == 'yes' ? 'yes' : 'no', $_POST['Thumbnail'], '', '', $_POST['UsagePolicy'], empty($_POST['MatchPolicy']) ? '' : 'yes', '', $_POST['MatchPolicy'], $breaks, $_POST['Playlist']],
+                [$_POST['VideoFile'], $_POST['Channel'], $asset_labels, $_POST['VideoTitleChs'], $_POST['VideoDesChs'], $keywords, 'zh-cn', 'Entertainment', $_POST['PublishImmediately'] == 'yes' ? 'public' : 'private', $_POST['NotifySubscribers'] == 'yes' ? 'yes' : 'no', $_POST['Thumbnail'], '', '', $_POST['UsagePolicy'], empty($_POST['MatchPolicy']) ? '' : 'yes', '', $_POST['MatchPolicy'], $ad_types, $breaks, $_POST['Playlist']],
             ];
             $header_data = [
-                'filename', 'channel', 'add_asset_labels', 'title', 'description', 'keywords', 'spoken_language', 'category', 'privacy', 'notify_subscribers', 'custom_thumbnail', 'ownership', 'block_outside_ownership', 'usage_policy', 'enable_content_id', 'reference_exclusions', 'match_policy', 'ad_break_times', 'playlist_id',
+                'filename', 'channel', 'add_asset_labels', 'title', 'description', 'keywords', 'spoken_language', 'category', 'privacy', 'notify_subscribers', 'custom_thumbnail', 'ownership', 'block_outside_ownership', 'usage_policy', 'enable_content_id', 'reference_exclusions', 'match_policy', 'ad_types', 'ad_break_times', 'playlist_id',
             ];
             $file_name = $_POST['VideoFile'] . '.csv';
 
