@@ -59,13 +59,14 @@ class TaskCommand extends Command
                         $name_arr = explode('.', $path_arr[1]);
 
                         //检测youtube上的视频目录并把视频result.xml保存到本地一份
-                        $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytdownload.sh ' . $video->filename . ' status-' . $video->xmlname . '.xml ' . storage_path() . '/app/csv_temp/ ' . $video->account_name . ' ' . $video->ssk_key_filename;
+                        $shell = '/bin/bash ' . app_path() . '/Console/Commands/ytdownload.sh ' . $video->filename . ' report-' . $video->xmlname . ' ' . storage_path() . '/app/csv_temp/ ' . $video->account_name . ' ' . $video->ssk_key_filename;
+
                         Log::info(self::LOG_TAG . 'ytdownload：' . $shell);
                         $res = trim(shell_exec($shell));
-                        Log::info(self::LOG_TAG . '获取youtube视频文件目录' . $video->filename . '下的xml文件的结果：' . $res);
+                        Log::info(self::LOG_TAG . '获取youtube视频文件目录' . $video->filename . '下的csv文件的结果：' . $res);
 
                         if (strpos($res, $video->xmlname)) {
-                            $local_xml_name = 'status-'.$video->xmlname.'.xml'; //存在本地的视频xml文件名称
+                            $local_xml_name = 'report-'.$video->xmlname; //存在本地的视频csv文件名称
 
                             if (Storage::disk('local')->exists($path_arr[0] . '/' . $local_xml_name) == false) {
                                 $failed = 1;
@@ -73,13 +74,18 @@ class TaskCommand extends Command
                             } else {
                                 Log::info(self::LOG_TAG . '下载到本地XML文件路径:' . $path_arr[0] . '/' . $local_xml_name . '.');
                                 $xml_name = $local_xml_name;
-                                $video_xml = Storage::disk('local')->get($path_arr[0] . '/' . $local_xml_name);
-                                if (strpos($video_xml, 'type="Video ID">')) {
-                                    $p1 = strpos($video_xml, 'type="Video ID">');
-                                    $p1 += strlen('type="Video ID">');
-                                    $p2 = strpos($video_xml, '</id>', $p1);
-                                    $vid = trim(substr($video_xml, $p1, $p2 - $p1));
-                                    Log::info(self::LOG_TAG . 'youtube视频vid:' . $vid . '.');
+                                $xml_path = storage_path('app') . '/' . $path_arr[0] . '/' . $local_xml_name;
+                                $handle = fopen($xml_path, 'r');
+                                if ($handle) {
+                                    $n = 0;
+                                    while ($data = fgetcsv($handle)) {
+                                        $n++;
+                                        if ($n == 2) {
+                                            $vid = $data[2];
+                                            Log::info(self::LOG_TAG . 'youtube视频vid:' . $vid . '.');
+                                            break;
+                                        }
+                                    }
 
                                     if (empty($vid)) {
                                         $failed = 1;
@@ -92,7 +98,7 @@ class TaskCommand extends Command
                                         $n = 0;
                                         while ($d = fgetcsv($handle)) {
                                             if ($n > 0 && !empty($d[2])) {
-                                                $d[0] = $vid;
+                                                $d[2] = $vid;
                                             }
                                             $csv_datas[] = $d;
                                             $n++;
@@ -135,9 +141,10 @@ class TaskCommand extends Command
                                             }
                                         }
                                     }
+
                                 } else {
                                     $failed = 1;
-                                    Log::info(self::LOG_TAG . 'youtube视频文件目录' . $video->filename . '下的' . $local_xml_name . '文件数据格式匹配不上.');
+                                    Log::info(self::LOG_TAG . 'youtube视频文件目录' . $video->filename . '下的' . $local_xml_name . '文件下载到本地出现异常.');
                                 }
                             }
                         } else {
